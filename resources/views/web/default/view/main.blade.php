@@ -168,6 +168,7 @@
         </div>
     </div>
     @include(getTemplate() . '.view.parts.container')
+    
     @if(isset($setting['site']['main_page_newest_container']) and $setting['site']['main_page_newest_container'] == 1)
         @include(getTemplate() . '.view.parts.newest')
     @endif

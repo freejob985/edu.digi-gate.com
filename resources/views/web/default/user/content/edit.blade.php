@@ -186,6 +186,27 @@
                         </form>
                         <form method="post" id="step-3-form-subscribe" class="form-horizontal">
                             {{ csrf_field() }}
+
+
+                            <div class="form-group">
+                                <label class="control-label col-md-4 tab-con">3 Months Subscribe Price</label>
+                                <div class="col-md-8 tab-con">
+                                    <div class="input-group">
+                                        <input type="number" name="price_3" onkeypress="validate(event)" value="{{ $item->price_3}}" class="form-control text-center">
+                                        <span class="input-group-addon click-for-upload img-icon-s">{{ currencySign() }}</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="control-label col-md-4 tab-con">3 Months Subscribe Price</label>
+                                <div class="col-md-8 tab-con">
+                                    <div class="input-group">
+                                        <input type="number" name="Discount" onkeypress="validate(event)" value="{{ $item->Discount}}" class="form-control text-center">
+                                        <span class="input-group-addon click-for-upload img-icon-s">الخصم</span>
+                                    </div>
+                                </div>
+                            </div>
                             <div class="form-group">
                                 <label class="control-label col-md-4 tab-con">3 Months Subscribe Price</label>
                                 <div class="col-md-8 tab-con">
