@@ -160,7 +160,8 @@
 
 
                             <div class="form-group">
-                              
+                                <label class="control-label col-md-4 tab-con">نسبة الخصم</label>
+
                                 <div class="col-md-8 tab-con">
                                     <div class="input-group">
                                         <input type="number" name="Discount" onkeypress="validate(event)" value="{{ $item->Discount}}" class="form-control text-center">
@@ -189,7 +190,7 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="control-label col-md-4 tab-con">{{ trans('main.postal_price') }}</label>
+                                <label class="control-label col-md-4 tab-con">سعر الباقة الرئسية</label>
                                 <div class="col-md-8 tab-con">
                                     <div class="input-group">
                                         <input type="number" name="post_price" onkeypress="validate(event)" value="{{$meta['post_price'] ?? ''}}" class="form-control text-center numtostr" @if($item->post != 1) disabled @endif>
