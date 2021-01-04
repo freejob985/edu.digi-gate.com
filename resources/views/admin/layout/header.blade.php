@@ -1,5 +1,12 @@
 @section('header')
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Markazi+Text:wght@600&family=Tajawal&display=swap');
+    * {
+        font-family: 'Markazi Text', serif;
+        font-family: 'Tajawal', sans-serif;
 
+    }
+</style>
     <header class="header">
 
         <div class="logo-container">
