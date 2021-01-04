@@ -1893,6 +1893,54 @@ class UserController extends Controller
         }
     }
 
+
+
+
+
+    // +++++++++++++++++++
+    public function facebookLogin()
+    {
+        return Socialite::driver('facebook')->redirect();
+
+
+        dd("Catch errors for script and full tracking ( 2 )");
+    }
+
+    public function facebookDoLogin(Request $request)
+    {
+        $user = Socialite::driver('facebook')->user();
+        dd("Catch errors for script and full tracking ( 2 )".$user);
+        $newUser = [
+            'username' => $user->name,
+            'created_at' => time(),
+            'admin' => 0,
+            'email' => $user->email,
+            'token' => $user->token,
+            'password' => Hash::make(Str::random(10)),
+            'mode' => 'active',
+            'category_id' => get_option('user_default_category'),
+        ];
+        $ifUserExist = User::where('email', $newUser['email'])->first();
+
+        if (empty($ifUserExist)) {
+            $insertUser = User::create($newUser);
+            Auth::login($insertUser);
+            $request->session()->put('user', serialize($insertUser));
+            return redirect('/user/profile');
+        } else {
+            $request->session()->put('user', serialize($ifUserExist->toArray()));
+            Auth::login($ifUserExist);
+            return redirect('/user/dashboard');
+        }
+    }
+
+
+
+
+
+
+    // ++++++++++++++++++
+
     ## Register Steps
     public function registerStepOne($phone)
     {

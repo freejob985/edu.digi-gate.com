@@ -245,12 +245,13 @@ Route::group(['middleware' => 'notification'], function () {
         Route::post('reset', 'UserController@forgetPassword');
         Route::get('reset/token/{token}', 'UserController@resetToken');
 
-        Route::get('/sociliate/{type}', 'UserController@googleLogin');
+        Route::get('/sociliate/google', 'UserController@googleLogin');
         Route::any('/google/login', 'UserController@googleDoLogin');
 
 
 
-
+        Route::get('/sociliate/facebook', 'UserController@facebookLogin');
+        Route::any('/facebook/login', 'UserController@googleDoLogin');
 
         
 
