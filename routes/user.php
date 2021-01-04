@@ -251,7 +251,7 @@ Route::group(['middleware' => 'notification'], function () {
 
 
         Route::get('/sociliate/facebook', 'UserController@facebookLogin');
-        Route::any('/facebook/login', 'UserController@googleDoLogin');
+        Route::any('/facebook/login', 'UserController@facebookDoLogin');
 
         
 
