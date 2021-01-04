@@ -1862,7 +1862,7 @@ class UserController extends Controller
 
     public function googleLogin($type)
     {
-        return Socialite::driver($google)->redirect();
+        return Socialite::driver($type)->redirect();
     }
 
 
