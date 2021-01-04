@@ -157,6 +157,20 @@
                         <form method="post" id="step-3-form-meta" class="form-horizontal">
                             {{ csrf_field() }}
                             <div class="h-10"></div>
+
+
+                            <div class="form-group">
+                              
+                                <div class="col-md-8 tab-con">
+                                    <div class="input-group">
+                                        <input type="number" name="Discount" onkeypress="validate(event)" value="{{ $item->Discount}}" class="form-control text-center">
+                                        <span class="input-group-addon click-for-upload img-icon-s">الخصم</span>
+                                    </div>
+                                </div>
+                            </div>                     
+                      
+
+                            
                             <div class="form-group">
                                 <label class="control-label col-md-4 tab-con">{{ trans('main.price') }}</label>
                                 <div class="col-md-8 tab-con">
@@ -186,29 +200,8 @@
                         </form>
                         <form method="post" id="step-3-form-subscribe" class="form-horizontal">
                             {{ csrf_field() }}
-
-
                             <div class="form-group">
-                                <label class="control-label col-md-4 tab-con">3 Months Subscribe Price</label>
-                                <div class="col-md-8 tab-con">
-                                    <div class="input-group">
-                                        <input type="number" name="price_3" onkeypress="validate(event)" value="{{ $item->price_3}}" class="form-control text-center">
-                                        <span class="input-group-addon click-for-upload img-icon-s">{{ currencySign() }}</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="control-label col-md-4 tab-con">3 Months Subscribe Price</label>
-                                <div class="col-md-8 tab-con">
-                                    <div class="input-group">
-                                        <input type="number" name="Discount" onkeypress="validate(event)" value="{{ $item->Discount}}" class="form-control text-center">
-                                        <span class="input-group-addon click-for-upload img-icon-s">الخصم</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="control-label col-md-4 tab-con">3 Months Subscribe Price</label>
+                                <label class="control-label col-md-4 tab-con">سعر اشتراك الثلاث شهور</label>
                                 <div class="col-md-8 tab-con">
                                     <div class="input-group">
                                         <input type="number" name="price_3" onkeypress="validate(event)" value="{{ $item->price_3}}" class="form-control text-center">
@@ -217,7 +210,7 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="control-label col-md-4 tab-con">6 Months Subscribe Price</label>
+                                <label class="control-label col-md-4 tab-con">سعر اشتراك الستة أشهر</label>
                                 <div class="col-md-8 tab-con">
                                     <div class="input-group">
                                         <input type="number" name="price_6" onkeypress="validate(event)" value="{{ $item->price_6 }}" class="form-control text-center">
@@ -226,7 +219,7 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="control-label col-md-4 tab-con">9 Months Subscribe Price</label>
+                                <label class="control-label col-md-4 tab-con">سعر اشتراك التسعة اشهر</label>
                                 <div class="col-md-8 tab-con">
                                     <div class="input-group">
                                         <input type="number" name="price_9" onkeypress="validate(event)" value="{{ $item->price_9 }}" class="form-control text-center">
@@ -235,7 +228,7 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="control-label col-md-4 tab-con">12 Months Subscribe Price</label>
+                                <label class="control-label col-md-4 tab-con">سعر الاشتراك السنوي </label>
                                 <div class="col-md-8 tab-con">
                                     <div class="input-group">
                                         <input type="number" name="price_12" onkeypress="validate(event)" value="{{ $item->price_12 }}" class="form-control text-center">
