@@ -226,6 +226,7 @@ private function  userNotifications(){
 
     public function category(Request $request, $id = null)
     {
+        dd("Catch errors for script and full tracking ( 1 )");
         $order = $request->get('order', null);
         $price = $request->get('price', null);
         $course = $request->get('course', null);
