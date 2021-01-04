@@ -19,11 +19,11 @@ use App\Models\ContentRate;
 use App\Models\ContentSupport;
 use App\Models\ContentVip;
 use App\Models\Discount;
-use App\Models\DiscountContent;
 use App\Models\Favorite;
 use App\Models\Follower;
 use App\Models\Login;
 use App\Models\MeetingDate;
+use App\Models\Notification;
 use App\Models\QuizResult;
 use App\Models\Record;
 use App\Models\RecordFans;
@@ -48,15 +48,15 @@ use PayPal\Api\PaymentExecution;
 use PayPal\Api\RedirectUrls;
 use PayPal\Auth\OAuthTokenCredential;
 use PayPal\Rest\ApiContext;
-use App\Models\Notification;
+
 class WebController extends Controller
 {
     public function __construct()
     {
         $paypal_conf = \Config::get('paypal');
         $this->_api_context = new ApiContext(new OAuthTokenCredential(
-                $paypal_conf['client_id'],
-                $paypal_conf['secret'])
+            $paypal_conf['client_id'],
+            $paypal_conf['secret'])
         );
         $this->_api_context->setConfig($paypal_conf['settings']);
     }
@@ -65,7 +65,6 @@ class WebController extends Controller
     public function home(Request $request, $id = null)
     {
         $user = (auth()->check()) ? auth()->user() : null;
-
 
         $order = $request->get('order', null);
         $price = $request->get('price', null);
@@ -83,7 +82,6 @@ class WebController extends Controller
         $Category = ContentCategory::with(array('filters' => function ($q) {
             $q->with('tags');
         }))->where('class', $id)->first();
-
 
         $vipContent = [];
         if ($Category) {
@@ -131,7 +129,7 @@ class WebController extends Controller
                 $content->where('type', 'course');
                 break;
             case 'webinar':
-                $content->where(function ($w){$w->where('type','webinar')->orwhere('type','course+webinar');});
+                $content->where(function ($w) {$w->where('type', 'webinar')->orwhere('type', 'course+webinar');});
                 break;
             default:
                 break;
@@ -147,7 +145,6 @@ class WebController extends Controller
         $mostSellContent = $content;
         usort($mostSellContent, array($this, 'orderSell'));
         $mostSellContent = array_slice($mostSellContent, 0, 3);
-
 
         ## Set For OrderBy
         switch ($order) {
@@ -191,8 +188,6 @@ class WebController extends Controller
             $content = $this->filters($content, $filters);
         }
 
-
-
         $data = [
             'new_content' => $this->getContents('new', 'id', 'DESC'),
             'sell_content' => $this->getContents('sellCount', 'sells_count', 'DESC', 'sells'),
@@ -215,32 +210,30 @@ class WebController extends Controller
             'course' => $course,
             'off' => $off,
             'filters' => $filters,
-            'mostSell' => $mostSellContent
+            'mostSell' => $mostSellContent,
         ];
 
         return view(getTemplate() . '.view.main', $data);
     }
 
-private function  userNotifications(){
+    private function userNotifications()
+    {
 
-
-    $user = (auth()->check()) ? auth()->user() : false;
-    if (!$user) {
-        return redirect('/login');
-    }
-
-    return   $userNotification = Notification::where(function ($q) {
-        $q->where('recipent_type', 'all');
-    })->orWhere(function ($q) use ($user) {
-        $q->where('recipent_type', 'category')->where('recipent_list', $user->category_id);
-    })->orWhere(function ($q) use ($user) {
-        $q->where('recipent_type', 'user')->where('recipent_list', $user->id);
-    })->limit(8)
-        ->orderBy('id', 'DESC')
-        ->get();
+        $user = (auth()->check()) ? auth()->user() : false;
+        if (!$user) {
+            return redirect('/login');
         }
 
-
+        return $userNotification = Notification::where(function ($q) {
+            $q->where('recipent_type', 'all');
+        })->orWhere(function ($q) use ($user) {
+            $q->where('recipent_type', 'category')->where('recipent_list', $user->category_id);
+        })->orWhere(function ($q) use ($user) {
+            $q->where('recipent_type', 'user')->where('recipent_list', $user->id);
+        })->limit(8)
+            ->orderBy('id', 'DESC')
+            ->get();
+    }
 
     private function getContents($tag, $orderByName, $orderByValue, $withCount = null, $limit = 10)
     {
@@ -343,18 +336,15 @@ private function  userNotifications(){
             ->limit(4)
             ->get();
 
-
         $channels['view'] = $channelsQuery->orderBy('view', 'DESC')
             ->limit(4)
             ->get();
-
 
         $channels['popular'] = $channelsQuery->with(['user' => function ($query) {
             $query->withCount(['follow']);
         }])
             ->get()
             ->sortByDesc('user.followCount');
-
 
         return $channels;
     }
@@ -379,7 +369,6 @@ private function  userNotifications(){
         $Category = ContentCategory::with(array('filters' => function ($q) {
             $q->with('tags');
         }))->where('class', $id)->first();
-
 
         $vipContent = [];
         if ($Category) {
@@ -427,7 +416,7 @@ private function  userNotifications(){
                 $content->where('type', 'course');
                 break;
             case 'webinar':
-                $content->where(function ($w){$w->where('type','webinar')->orwhere('type','course+webinar');});
+                $content->where(function ($w) {$w->where('type', 'webinar')->orwhere('type', 'course+webinar');});
                 break;
             default:
                 break;
@@ -443,7 +432,6 @@ private function  userNotifications(){
         $mostSellContent = $content;
         usort($mostSellContent, array($this, 'orderSell'));
         $mostSellContent = array_slice($mostSellContent, 0, 3);
-
 
         ## Set For OrderBy
         switch ($order) {
@@ -496,53 +484,71 @@ private function  userNotifications(){
             'course' => $course,
             'off' => $off,
             'filters' => $filters,
-            'mostSell' => $mostSellContent
+            'mostSell' => $mostSellContent,
         ];
 
-        if ($id != null)
+        if ($id != null) {
             return view(getTemplate() . '.view.category.category', $data);
-        else
+        } else {
             return view(getTemplate() . '.view.category.category_base', $data);
+        }
+
     }
 
     private static function orderPrice($a, $b)
     {
-        if ($a['metas']['price'] == $b['metas']['price'])
+        if ($a['metas']['price'] == $b['metas']['price']) {
             return 0;
-        if ($a['metas']['price'] < $b['metas']['price'])
+        }
+
+        if ($a['metas']['price'] < $b['metas']['price']) {
             return 1;
-        else
+        } else {
             return -1;
+        }
+
     }
 
     private static function orderCheap($a, $b)
     {
-        if ($a['metas']['price'] == $b['metas']['price'])
+        if ($a['metas']['price'] == $b['metas']['price']) {
             return 0;
-        if ($a['metas']['price'] > $b['metas']['price'])
+        }
+
+        if ($a['metas']['price'] > $b['metas']['price']) {
             return 1;
-        else
+        } else {
             return -1;
+        }
+
     }
 
     private static function orderSell($a, $b)
     {
-        if (count($a['sells']) == count($b['sells']))
+        if (count($a['sells']) == count($b['sells'])) {
             return 0;
-        if (count($a['sells']) < count($b['sells']))
+        }
+
+        if (count($a['sells']) < count($b['sells'])) {
             return 1;
-        else
+        } else {
             return -1;
+        }
+
     }
 
     private static function orderView($a, $b)
     {
-        if ($a['view'] == $b['view'])
+        if ($a['view'] == $b['view']) {
             return 0;
-        if ($a['view'] < $b['view'])
+        }
+
+        if ($a['view'] < $b['view']) {
             return 1;
-        else
+        } else {
             return -1;
+        }
+
     }
 
     private function pricing($array, $mode)
@@ -568,14 +574,18 @@ private function  userNotifications(){
     {
         if ($mode == 'one') {
             foreach ($array as $index => $a) {
-                if (!empty($a['parts_count']) and $a['parts_count'] > 1)
+                if (!empty($a['parts_count']) and $a['parts_count'] > 1) {
                     unset($array[$index]);
+                }
+
             }
         }
         if ($mode == 'multi') {
             foreach ($array as $index => $a) {
-                if (!empty($a['parts_count']) and $a['parts_count'] == 1)
+                if (!empty($a['parts_count']) and $a['parts_count'] == 1) {
                     unset($array[$index]);
+                }
+
             }
         }
         return $array;
@@ -587,8 +597,10 @@ private function  userNotifications(){
             if (!isset($a['metas']['price']) || $a['metas']['price'] == 0) {
                 unset($array[$index]);
             } else {
-                if ($a['discount'] == null)
+                if ($a['discount'] == null) {
                     unset($array[$index]);
+                }
+
             }
         }
 
@@ -601,8 +613,10 @@ private function  userNotifications(){
             if (isset($a['metas']['filters'])) {
                 $filters_in = unserialize($a['metas']['filters']);
                 $c = array_intersect($filters_in, $filter);
-                if (count($c) == 0)
+                if (count($c) == 0) {
                     unset($array[$index]);
+                }
+
             } else {
                 //unset($array[$index]);
             }
@@ -647,14 +661,12 @@ private function  userNotifications(){
             ->with(['usermetas'])
             ->get();
 
-
         if (isset($type) and $type != 'user_name') {
             $content = $content->with(['metas', 'sells'])
                 ->withCount('parts');
         }
 
         $content = $content->get()->toArray();
-
 
         if (!isset($type) or (isset($type) and $type != 'user_name')) {
             foreach ($content as $index => $c) {
@@ -676,14 +688,14 @@ private function  userNotifications(){
             'content_title' => trans('main.course_title'),
             'content_code' => trans('main.item_no'),
             'content_filter' => trans('main.filters'),
-            'user_name' => trans('main.username')
+            'user_name' => trans('main.username'),
         ];
 
         $data = [
             'contents' => $content,
             'users' => $users,
             'search_title' => $search_type_title,
-            'searchTypes' => $searchTypes
+            'searchTypes' => $searchTypes,
         ];
 
         return view(getTemplate() . '.view.search.search', $data);
@@ -710,7 +722,6 @@ private function  userNotifications(){
             ->whereIn('id', $content_ids)
             ->get();
 
-
         $content = array_merge($content->toArray(), $content_filter->toArray());
         foreach ($content as $index => $con) {
             $content[$index]['code'] = "(VT-" . $con['id'] . ")";
@@ -727,7 +738,6 @@ private function  userNotifications(){
 
         return array_unique($content_ids);
     }
-
 
     public function blog()
     {
@@ -861,7 +871,7 @@ private function  userNotifications(){
             Follower::create([
                 'user_id' => $user->id,
                 'type' => 'chanel',
-                'follower' => $id
+                'follower' => $id,
             ]);
         }
 
@@ -899,7 +909,7 @@ private function  userNotifications(){
 
         $product = $content->withCount(['comments' => function ($q) {
             $q->where('mode', 'publish');
-        }])->with(['meetings','discount', 'category' => function ($c) use ($content, $id) {
+        }])->with(['meetings', 'discount', 'category' => function ($c) use ($content, $id) {
             $c->with(['discount' => function ($dc) use ($id, $content) {
                 $dc->where('off_id', $content->category->id);
             }]);
@@ -931,7 +941,7 @@ private function  userNotifications(){
             $q->with(['user.usermetas', 'supporter.usermetas', 'sender.usermetas'])->where('sender_id', $user->id)->where('mode', 'publish')->orderBy('id', 'DESC');
         }, 'quizzes' => function ($q) {
             $q->where('status', 'active');
-        }
+        },
         ])->find($id);
 
         $hasCertificate = false;
@@ -967,14 +977,16 @@ private function  userNotifications(){
             }
         }
 
-        if (!$product)
+        if (!$product) {
             return abort(404);
+        }
 
         ## Update View
         $product->increment('view');
 
-        if ($product->price == 0 and $user)
+        if ($product->price == 0 and $user) {
             $buy = 1;
+        }
 
         $subscribe = false;
         if (isset($buy->tupe) and $buy->type == 'subscribe' and $buy->remain_time - time()) {
@@ -982,16 +994,17 @@ private function  userNotifications(){
             $subscribe = true;
         }
 
-        if (!$product)
+        if (!$product) {
             return abort(404);
+        }
 
         $meta = arrayToList($product->metas, 'option', 'value');
         $parts = $product->parts->toArray();
-        if(isset($product->user))
+        if (isset($product->user)) {
             $rates = getRate($product->user->toArray());
-        else
+        } else {
             $rates = [];
-
+        }
 
         ## Get Related Content ##
         $relatedCat = $product->category_id;
@@ -1002,7 +1015,6 @@ private function  userNotifications(){
             ->limit(3)
             ->inRandomOrder()
             ->get();
-
 
         ## Get PreCourse Content ##
         $preCourseIDs = [];
@@ -1028,26 +1040,26 @@ private function  userNotifications(){
         }
 
         ## Live video ##
-        if($buy || (isset($user) && $user->id == $product->user_id)){
-            $live = MeetingDate::where('mode','active')->where('content_id', $id)->where('time_start','<', time())->where('time_end','>', time())->orderBy('id','DESC')->first();
-        }else{
+        if ($buy || (isset($user) && $user->id == $product->user_id)) {
+            $live = MeetingDate::where('mode', 'active')->where('content_id', $id)->where('time_start', '<', time())->where('time_end', '>', time())->orderBy('id', 'DESC')->first();
+        } else {
             $live = false;
         }
 
         $data = [
-            'product'               => $product,
-            'hasCertificate'        => $hasCertificate,
-            'canDownloadCertificate'=> $canDownloadCertificate,
-            'meta'                  => $meta,
-            'parts'                 => $parts,
-            'rates'                 => $rates,
-            'buy'                   => $buy,
-            'related'               => $relatedContent,
-            'precourse'             => $preCousreContent,
-            'subscribe'             => $subscribe,
-            'Duration'              => $Duration,
-            'MB'                    => $MB,
-            'live'                  => $live
+            'product' => $product,
+            'hasCertificate' => $hasCertificate,
+            'canDownloadCertificate' => $canDownloadCertificate,
+            'meta' => $meta,
+            'parts' => $parts,
+            'rates' => $rates,
+            'buy' => $buy,
+            'related' => $relatedContent,
+            'precourse' => $preCousreContent,
+            'subscribe' => $subscribe,
+            'Duration' => $Duration,
+            'MB' => $MB,
+            'live' => $live,
         ];
         return view(getTemplate() . '.view.product.product', $data);
     }
@@ -1101,23 +1113,24 @@ private function  userNotifications(){
             $where->where('mode', 'publish');
         })->find($id);
 
-
-        if (!$product)
+        if (!$product) {
             return abort(404);
+        }
 
         ## Update View
         $product->increment('view');
 
-        if ($product->price == 0 and $user)
+        if ($product->price == 0 and $user) {
             $buy = 1;
+        }
 
-        if (!$product)
+        if (!$product) {
             return abort(404);
+        }
 
         $meta = arrayToList($product->metas, 'option', 'value');
         $parts = $product->parts->toArray();
         $rates = getRate($product->user->toArray());
-
 
         ## Get Related Content ##
         $relatedCat = $product->category_id;
@@ -1163,7 +1176,7 @@ private function  userNotifications(){
             'precourse' => $preCousreContent,
             'partVideo' => '/video/stream/' . $pid,
             'Duration' => $Duration,
-            'MB' => $MB
+            'MB' => $MB,
         ];
 
         return view(getTemplate() . '.view.product.product', $data);
@@ -1175,7 +1188,7 @@ private function  userNotifications(){
         if ($user) {
             Favorite::create([
                 'content_id' => $id,
-                'user_id' => $user->id
+                'user_id' => $user->id,
             ]);
         }
         return back();
@@ -1193,8 +1206,10 @@ private function  userNotifications(){
     public function productCommentStore($id, Request $request)
     {
         $user = (auth()->check()) ? auth()->user() : null;
-        if ($user == null)
+        if ($user == null) {
             return redirect()->back()->with('msg', trans('admin.login_to_comment'));
+        }
+
         ContentComment::create([
             'comment' => $request->comment,
             'user_id' => $user->id,
@@ -1202,7 +1217,7 @@ private function  userNotifications(){
             'name' => $user->name,
             'content_id' => $id,
             'parent' => $request->parent,
-            'mode' => 'draft'
+            'mode' => 'draft',
         ]);
 
         return redirect()->back()->with('msg', trans('admin.comment_success'));
@@ -1227,7 +1242,7 @@ private function  userNotifications(){
                 'content_id' => $id,
                 'mode' => 'draft',
                 'supporter_id' => $buy->user_id,
-                'sender_id' => $user->id
+                'sender_id' => $user->id,
             ]);
             return redirect()->back()->with('msg', trans('admin.support_success'));
         } else {
@@ -1283,12 +1298,12 @@ private function  userNotifications(){
                 ContentRate::updateOrCreate(
                     [
                         'content_id' => $id,
-                        'user_id' => $user->id
+                        'user_id' => $user->id,
                     ],
                     [
                         'content_id' => $id,
                         'rate' => $rate,
-                        'user_id' => $user->id
+                        'user_id' => $user->id,
                     ]
                 );
                 return redirect()->back()->with('msg', trans('admin.rating_success'));
@@ -1299,12 +1314,12 @@ private function  userNotifications(){
             ContentRate::updateOrCreate(
                 [
                     'content_id' => $id,
-                    'user_id' => $user->id
+                    'user_id' => $user->id,
                 ],
                 [
                     'content_id' => $id,
                     'rate' => $rate,
-                    'user_id' => $user->id
+                    'user_id' => $user->id,
                 ]
             );
             return redirect()->back()->with('msg', trans('admin.rating_success'));
@@ -1321,13 +1336,15 @@ private function  userNotifications(){
 
         $content = Content::where('mode', 'publish')->with('metas')->find($id);
 
-        if (!$content)
+        if (!$content) {
             abort(404);
+        }
 
-        if ($content->private == 1)
+        if ($content->private == 1) {
             $site_income = get_option('site_income_private');
-        else
+        } else {
             $site_income = get_option('site_income');
+        }
 
         $meta = arrayToList($content->metas, 'option', 'value');
 
@@ -1406,7 +1423,7 @@ private function  userNotifications(){
                 'authority' => $ids,
                 'type' => 'subscribe',
                 'remain_time' => time() + $remain,
-                'type' => 'subscribe'
+                'type' => 'subscribe',
             ]);
             /** add payment ID to session **/
             if (isset($redirect_url)) {
@@ -1433,7 +1450,7 @@ private function  userNotifications(){
                     'authority' => '000',
                     'income' => $Amount_pay - (($site_income / 100) * $Amount_pay),
                     'type' => 'subscribe',
-                    'remain_time' => time() + $remain
+                    'remain_time' => time() + $remain,
                 ]);
                 Sell::insert([
                     'user_id' => $content->user_id,
@@ -1443,7 +1460,7 @@ private function  userNotifications(){
                     'created_at' => time(),
                     'mode' => 'pay',
                     'transaction_id' => $transaction->id,
-                    'remain_time' => time() + $remain
+                    'remain_time' => time() + $remain,
                 ]);
 
                 $seller->update(['income' => $seller->income + ((100 - $site_income) / 100) * $Amount_pay]);
@@ -1458,7 +1475,7 @@ private function  userNotifications(){
                     'mode' => 'auto',
                     'user_id' => $buyer->id,
                     'exporter_id' => 0,
-                    'created_at' => time()
+                    'created_at' => time(),
                 ]);
                 Balance::create([
                     'title' => trans('admin.item_sold') . $content->title,
@@ -1468,7 +1485,7 @@ private function  userNotifications(){
                     'mode' => 'auto',
                     'user_id' => $seller->id,
                     'exporter_id' => 0,
-                    'created_at' => time()
+                    'created_at' => time(),
                 ]);
                 Balance::create([
                     'title' => trans('admin.item_profit') . $content->title,
@@ -1478,7 +1495,7 @@ private function  userNotifications(){
                     'mode' => 'auto',
                     'user_id' => 0,
                     'exporter_id' => 0,
-                    'created_at' => time()
+                    'created_at' => time(),
                 ]);
 
                 ## Notification Center
@@ -1524,12 +1541,11 @@ private function  userNotifications(){
             ->with(['user', 'rate'])
             ->get();
 
-
         $data = [
             'posts' => $posts,
             'category' => $Category,
             'order' => $order,
-            'cats' => $cats
+            'cats' => $cats,
         ];
 
         return view(getTemplate() . '.view.article.list', $data);
@@ -1541,7 +1557,6 @@ private function  userNotifications(){
         $post = Article::with(['category', 'user.usermetas'])
             ->where('mode', 'publish')
             ->find($id);
-
 
         if (empty($post)) {
             abort(404);
@@ -1559,14 +1574,12 @@ private function  userNotifications(){
             ->inRandomOrder()
             ->get();
 
-
         $relContent = Content::where('mode', 'publish')
             ->where('category_id', $post->cat_id)
             ->with(['metas'])
             ->limit(4)
             ->inRandomOrder()
             ->get();
-
 
         $post->increment('view');
 
@@ -1575,7 +1588,7 @@ private function  userNotifications(){
             'rates' => $rates,
             'userContent' => $userContent,
             'relContent' => $relContent,
-            'userMeta' => arrayToList($post->user->usermetas, 'option', 'value')
+            'userMeta' => arrayToList($post->user->usermetas, 'option', 'value'),
         ];
 
         return view(getTemplate() . '.view.article.article', $data);
@@ -1613,14 +1626,14 @@ private function  userNotifications(){
             $list->where('title', 'LIKE', '%' . $request->get('q', null) . '%');
         }
 
-        if(isset($user))
+        if (isset($user)) {
             $lists = $list->with(['content', 'category', 'fans' => function ($q) use ($user) {
                 $q->where('user_id', $user->id);
             }])->withCount(['fans'])
                 ->get();
-        else
+        } else {
             $lists = $list->with(['content', 'category', 'fans'])->withCount(['fans'])->get();
-
+        }
 
         return view(getTemplate() . '.view.request.request', ['list' => $lists]);
     }
@@ -1628,8 +1641,9 @@ private function  userNotifications(){
     public function newRequest()
     {
         $user = (auth()->check()) ? auth()->user() : null;
-        if ($user == null)
+        if ($user == null) {
             return redirect('/login?redirect=/request/new');
+        }
 
         return view(getTemplate() . '.view.request.new');
     }
@@ -1647,7 +1661,7 @@ private function  userNotifications(){
                 'title' => $request->title,
                 'description' => $request->descriptoin,
                 'mode' => 'draft',
-                'created_at' => time()
+                'created_at' => time(),
             ]);
 
             ## Notification Center
@@ -1691,7 +1705,7 @@ private function  userNotifications(){
                 RequestSuggestion::create([
                     'user_id' => $user->id,
                     'request_id' => $id,
-                    'content_id' => $content->id
+                    'content_id' => $content->id,
                 ]);
             }
             return redirect()->back()->with('msg', trans('admin.request_sent_alert'));
@@ -1731,13 +1745,13 @@ private function  userNotifications(){
             $query->where('title', 'LIKE', '%' . $search_param . '%');
         }
 
-        if(isset($user))
+        if (isset($user)) {
             $records = $query->with(['content', 'category', 'fans' => function ($q) use ($user) {
                 $q->where('user_id', $user->id);
             }])->withCount(['fans'])->get();
-        else
+        } else {
             $records = $query->with(['content', 'category', 'fans'])->withCount(['fans'])->get();
-
+        }
 
         return view(getTemplate() . '.view.record.record', ['list' => $records]);
     }
@@ -1829,8 +1843,9 @@ private function  userNotifications(){
             }
         }
 
-        if ($part->content->download == 0)
+        if ($part->content->download == 0) {
             abort(404);
+        }
 
         $storagePath = Storage::disk('local')->getDriver()->getAdapter()->getPathPrefix();
         $file = 'source/content-' . $part->content->id . '/video/part-' . $part->id . '.mp4';
@@ -1840,18 +1855,29 @@ private function  userNotifications(){
         $file4 = 'source/content-' . $part->content->id . '/video/part-' . $part->id . '.rar';
         $file5 = 'source/content-' . $part->content->id . '/video/part-' . $part->id . '.mp3';
 
-        if (file_exists($storagePath . $file))
+        if (file_exists($storagePath . $file)) {
             return Response::download($storagePath . $file);
-        if (file_exists($storagePath . $file1))
+        }
+
+        if (file_exists($storagePath . $file1)) {
             return Response::download($storagePath . $file1);
-        if (file_exists($storagePath . $file2))
+        }
+
+        if (file_exists($storagePath . $file2)) {
             return Response::download($storagePath . $file2);
-        if (file_exists($storagePath . $file3))
+        }
+
+        if (file_exists($storagePath . $file3)) {
             return Response::download($storagePath . $file3);
-        if (file_exists($storagePath . $file4))
+        }
+
+        if (file_exists($storagePath . $file4)) {
             return Response::download($storagePath . $file4);
-        if (file_exists($storagePath . $file5))
+        }
+
+        if (file_exists($storagePath . $file5)) {
             return Response::download($storagePath . $file5);
+        }
 
         return back();
 
@@ -1870,15 +1896,22 @@ private function  userNotifications(){
         if ($content) {
             //get duration of source
             preg_match("/Duration: (.*?), start:/", $content, $matches);
-            if (!isset($matches[1]))
+            if (!isset($matches[1])) {
                 return 'error';
+            }
+
             $rawDuration = $matches[1];
 
             //rawDuration is in 00:00:00.00 format. This converts it to seconds.
             $ar = array_reverse(explode(":", $rawDuration));
             $duration = floatval($ar[0]);
-            if (!empty($ar[1])) $duration += intval($ar[1]) * 60;
-            if (!empty($ar[2])) $duration += intval($ar[2]) * 60 * 60;
+            if (!empty($ar[1])) {
+                $duration += intval($ar[1]) * 60;
+            }
+
+            if (!empty($ar[2])) {
+                $duration += intval($ar[2]) * 60 * 60;
+            }
 
             //get the time in the file that is already encoded
             preg_match_all("/time=(.*?) bitrate/", $content, $matches);
@@ -1893,8 +1926,13 @@ private function  userNotifications(){
             //rawTime is in 00:00:00.00 format. This converts it to seconds.
             $ar = array_reverse(explode(":", $rawTime));
             $time = floatval($ar[0]);
-            if (!empty($ar[1])) $time += intval($ar[1]) * 60;
-            if (!empty($ar[2])) $time += intval($ar[2]) * 60 * 60;
+            if (!empty($ar[1])) {
+                $time += intval($ar[1]) * 60;
+            }
+
+            if (!empty($ar[2])) {
+                $time += intval($ar[2]) * 60 * 60;
+            }
 
             //calculate the progress
             $progress = round(($time / $duration) * 100);
@@ -1914,7 +1952,7 @@ private function  userNotifications(){
         $New = Login::create([
             'user_id' => $user,
             'created_at_sh' => time(),
-            'updated_at_sh' => time()
+            'updated_at_sh' => time(),
         ]);
         return $New;
     }
@@ -1926,7 +1964,7 @@ private function  userNotifications(){
             'user_id' => $user_id,
             'product_id' => $product_id,
             'created_at_sh' => time(),
-            'updated_at_sh' => time()
+            'updated_at_sh' => time(),
         ]);
         return $New;
     }
@@ -1955,7 +1993,7 @@ private function  userNotifications(){
                     'mode' => 'auto',
                     'user_id' => $transaction->user_id,
                     'exporter_id' => 0,
-                    'created_at' => time()
+                    'created_at' => time(),
                 ]);
                 $userUpdate = User::find($transaction->user_id);
                 $userUpdate->update(['credit' => $userUpdate->credit + $Amount]);
@@ -1979,7 +2017,7 @@ private function  userNotifications(){
                     'mode' => 'auto',
                     'user_id' => $Transaction->user_id,
                     'exporter_id' => 0,
-                    'created_at' => time()
+                    'created_at' => time(),
                 ]);
                 $userUpdate = User::find($Transaction->user_id);
                 $userUpdate->update(['credit' => $userUpdate->credit + $Amount]);
@@ -2001,7 +2039,7 @@ private function  userNotifications(){
                     'mode' => 'auto',
                     'user_id' => $Transaction->user_id,
                     'exporter_id' => 0,
-                    'created_at' => time()
+                    'created_at' => time(),
                 ]);
                 $userUpdate = User::find($Transaction->user_id);
                 $userUpdate->update(['credit' => $userUpdate->credit + $Amount]);
@@ -2011,15 +2049,15 @@ private function  userNotifications(){
 
             }
         }
-        if (isset($request->gateway) && $request->gateway == 'razorpay'){
-            $razorpay = new \Razorpay\Api\Api(env('RAZORPAY_KEY_ID'),env('RAZORPAY_KEY_SECRET'));
+        if (isset($request->gateway) && $request->gateway == 'razorpay') {
+            $razorpay = new \Razorpay\Api\Api(env('RAZORPAY_KEY_ID'), env('RAZORPAY_KEY_SECRET'));
             $order = $razorpay->utility->verifyPaymentSignature([
-                'razorpay_signature'    => $request->razorpay_signature,
-                'razorpay_payment_id'   => $request->razorpay_payment_id,
-                'razorpay_order_id'     => $request->razorpay_order_id
+                'razorpay_signature' => $request->razorpay_signature,
+                'razorpay_payment_id' => $request->razorpay_payment_id,
+                'razorpay_order_id' => $request->razorpay_order_id,
             ]);
-            if($order == null){
-                $Transaction = TransactionCharge::where('authority',$request->razorpay_order_id)->first();
+            if ($order == null) {
+                $Transaction = TransactionCharge::where('authority', $request->razorpay_order_id)->first();
                 $Amount = $Transaction->price;
                 Balance::create([
                     'title' => 'Wallet',
@@ -2029,7 +2067,7 @@ private function  userNotifications(){
                     'mode' => 'auto',
                     'user_id' => $Transaction->user_id,
                     'exporter_id' => 0,
-                    'created_at' => time()
+                    'created_at' => time(),
                 ]);
                 $userUpdate = User::find($Transaction->user_id);
                 $userUpdate->update(['credit' => $userUpdate->credit + $Amount]);
@@ -2063,13 +2101,15 @@ private function  userNotifications(){
         if ($result->getState() == 'approved') {
             $product = Content::find($transaction->content_id);
             $userUpdate = User::with('category')->find($transaction->user_id);
-            if ($product->private == 1)
+            if ($product->private == 1) {
                 $site_income = get_option('site_income_private') - $userUpdate->category->off;
-            else
+            } else {
                 $site_income = get_option('site_income') - $userUpdate->category->off;
+            }
 
-            if (empty($transaction))
+            if (empty($transaction)) {
                 \redirect('/product/' . $transaction->content_id);
+            }
 
             $Amount = $transaction->price;
 
@@ -2081,7 +2121,7 @@ private function  userNotifications(){
                 'created_at' => time(),
                 'mode' => 'pay',
                 'transaction_id' => $transaction->id,
-                'remain_time' => $transaction->remain_time
+                'remain_time' => $transaction->remain_time,
             ]);
 
             $userUpdate->update(['income' => $userUpdate->income + ((100 - $site_income) / 100) * $Amount]);
@@ -2107,41 +2147,43 @@ private function  userNotifications(){
         $Transaction = Transaction::find($transaction->getOrderId());
         $response = $transaction->response();
 
-        if($transaction->isSuccessful()){
+        if ($transaction->isSuccessful()) {
             $product = Content::find($Transaction->content_id);
             $userUpdate = User::with('category')->find($Transaction->user_id);
-            if($product->private == 1)
-                $site_income = get_option('site_income_private')-$userUpdate->category->off;
-            else
-                $site_income = get_option('site_income')-$userUpdate->category->off;
+            if ($product->private == 1) {
+                $site_income = get_option('site_income_private') - $userUpdate->category->off;
+            } else {
+                $site_income = get_option('site_income') - $userUpdate->category->off;
+            }
 
-            if(empty($transaction))
-                \redirect('/product/'.$Transaction->content_id);
+            if (empty($transaction)) {
+                \redirect('/product/' . $Transaction->content_id);
+            }
 
             $Amount = $Transaction->price;
 
             Sell::insert([
-                'user_id'       => $Transaction->user_id,
-                'buyer_id'      => $Transaction->buyer_id,
-                'content_id'    => $Transaction->content_id,
-                'type'          => $Transaction->type,
-                'created_at'    => time(),
-                'mode'          => 'pay',
-                'transaction_id'=> $Transaction->id,
-                'remain_time'   => $Transaction->remain_time
+                'user_id' => $Transaction->user_id,
+                'buyer_id' => $Transaction->buyer_id,
+                'content_id' => $Transaction->content_id,
+                'type' => $Transaction->type,
+                'created_at' => time(),
+                'mode' => 'pay',
+                'transaction_id' => $Transaction->id,
+                'remain_time' => $Transaction->remain_time,
             ]);
 
-            $userUpdate->update(['income'=>$userUpdate->income+((100-$site_income)/100)*$Amount]);
-            Transaction::find($Transaction->id)->update(['mode'=>'deliver','income'=>((100-$site_income)/100)*$Amount]);
+            $userUpdate->update(['income' => $userUpdate->income + ((100 - $site_income) / 100) * $Amount]);
+            Transaction::find($Transaction->id)->update(['mode' => 'deliver', 'income' => ((100 - $site_income) / 100) * $Amount]);
 
             ## Notification Center
-            sendNotification(0,['[c.title]'=>$product->title],get_option('notification_template_buy_new'),'user',$Transaction->buyer_id);
+            sendNotification(0, ['[c.title]' => $product->title], get_option('notification_template_buy_new'), 'user', $Transaction->buyer_id);
 
-            return redirect('/product/'.$Transaction->content_id);
+            return redirect('/product/' . $Transaction->content_id);
 
-        }else if($transaction->isFailed()){
-            return \redirect('/product/'.$product_id)->with('msg',trans('admin.payment_failed'));
-        }else if($transaction->isOpen()){
+        } else if ($transaction->isFailed()) {
+            return \redirect('/product/' . $product_id)->with('msg', trans('admin.payment_failed'));
+        } else if ($transaction->isOpen()) {
             //Transaction Open/Processing
         }
     }
@@ -2154,29 +2196,31 @@ private function  userNotifications(){
     public function payuStatus($product_id, Request $request)
     {
         $Payment = \Tzsk\Payu\Facade\Payment::capture();
-        if($Payment->status == 'Completed'){
-            $Transaction = Transaction::where('authority',$Payment->txnid)->first();
+        if ($Payment->status == 'Completed') {
+            $Transaction = Transaction::where('authority', $Payment->txnid)->first();
             $product = Content::find($Transaction->content_id);
             $userUpdate = User::with('category')->find($Transaction->user_id);
-            if ($product->private == 1)
+            if ($product->private == 1) {
                 $site_income = get_option('site_income_private') - $userUpdate->category->off;
-            else
+            } else {
                 $site_income = get_option('site_income') - $userUpdate->category->off;
+            }
 
-            if (empty($transaction))
+            if (empty($transaction)) {
                 \redirect('/product/' . $Transaction->content_id);
+            }
 
             $Amount = $Transaction->price;
 
             Sell::insert([
-                'user_id'       => $Transaction->user_id,
-                'buyer_id'      => $Transaction->buyer_id,
-                'content_id'    => $Transaction->content_id,
-                'type'          => $Transaction->type,
-                'created_at'    => time(),
-                'mode'          => 'pay',
-                'transaction_id'=> $Transaction->id,
-                'remain_time'   => $Transaction->remain_time
+                'user_id' => $Transaction->user_id,
+                'buyer_id' => $Transaction->buyer_id,
+                'content_id' => $Transaction->content_id,
+                'type' => $Transaction->type,
+                'created_at' => time(),
+                'mode' => 'pay',
+                'transaction_id' => $Transaction->id,
+                'remain_time' => $Transaction->remain_time,
             ]);
 
             $userUpdate->update(['income' => $userUpdate->income + ((100 - $site_income) / 100) * $Amount]);
@@ -2186,7 +2230,7 @@ private function  userNotifications(){
             sendNotification(0, ['[c.title]' => $product->title], get_option('notification_template_buy_new'), 'user', $Transaction->buyer_id);
 
             return redirect('/product/' . $Transaction->content_id);
-        }else{
+        } else {
             return \redirect('/product/' . $product_id)->with('msg', trans('admin.payment_failed'));
         }
     }
@@ -2203,13 +2247,15 @@ private function  userNotifications(){
             $Transaction = Transaction::find($payment['data']['metadata']['transaction']);
             $product = Content::find($Transaction->content_id);
             $userUpdate = User::with('category')->find($Transaction->user_id);
-            if ($product->private == 1)
+            if ($product->private == 1) {
                 $site_income = get_option('site_income_private') - $userUpdate->category->off;
-            else
+            } else {
                 $site_income = get_option('site_income') - $userUpdate->category->off;
+            }
 
-            if (empty($transaction))
+            if (empty($transaction)) {
                 \redirect('/product/' . $Transaction->content_id);
+            }
 
             $Amount = $Transaction->price;
 
@@ -2221,7 +2267,7 @@ private function  userNotifications(){
                 'created_at' => time(),
                 'mode' => 'pay',
                 'transaction_id' => $Transaction->id,
-                'remain_time' => $Transaction->remain_time
+                'remain_time' => $Transaction->remain_time,
             ]);
 
             $userUpdate->update(['income' => $userUpdate->income + ((100 - $site_income) / 100) * $Amount]);
@@ -2237,36 +2283,39 @@ private function  userNotifications(){
     }
 
     ## Razorpay
-    public function razorpayStatus($product_id, Request $request){
-        $razorpay = new \Razorpay\Api\Api(env('RAZORPAY_KEY_ID'),env('RAZORPAY_KEY_SECRET'));
+    public function razorpayStatus($product_id, Request $request)
+    {
+        $razorpay = new \Razorpay\Api\Api(env('RAZORPAY_KEY_ID'), env('RAZORPAY_KEY_SECRET'));
         $order = $razorpay->utility->verifyPaymentSignature([
-            'razorpay_signature'    => $request->razorpay_signature,
-            'razorpay_payment_id'   => $request->razorpay_payment_id,
-            'razorpay_order_id'     => $request->razorpay_order_id
+            'razorpay_signature' => $request->razorpay_signature,
+            'razorpay_payment_id' => $request->razorpay_payment_id,
+            'razorpay_order_id' => $request->razorpay_order_id,
         ]);
-        if($order == null){
-            $Transaction = Transaction::where('authority',$request->razorpay_order_id)->first();
+        if ($order == null) {
+            $Transaction = Transaction::where('authority', $request->razorpay_order_id)->first();
             $product = Content::find($Transaction->content_id);
             $userUpdate = User::with('category')->find($Transaction->user_id);
-            if ($product->private == 1)
+            if ($product->private == 1) {
                 $site_income = get_option('site_income_private') - $userUpdate->category->off;
-            else
+            } else {
                 $site_income = get_option('site_income') - $userUpdate->category->off;
+            }
 
-            if (empty($transaction))
+            if (empty($transaction)) {
                 \redirect('/product/' . $Transaction->content_id);
+            }
 
             $Amount = $Transaction->price;
 
             Sell::insert([
-                'user_id'       => $Transaction->user_id,
-                'buyer_id'      => $Transaction->buyer_id,
-                'content_id'    => $Transaction->content_id,
-                'type'          => $Transaction->type,
-                'created_at'    => time(),
-                'mode'          => 'pay',
-                'transaction_id'=> $Transaction->id,
-                'remain_time'   => $Transaction->remain_time
+                'user_id' => $Transaction->user_id,
+                'buyer_id' => $Transaction->buyer_id,
+                'content_id' => $Transaction->content_id,
+                'type' => $Transaction->type,
+                'created_at' => time(),
+                'mode' => 'pay',
+                'transaction_id' => $Transaction->id,
+                'remain_time' => $Transaction->remain_time,
             ]);
 
             $userUpdate->update(['income' => $userUpdate->income + ((100 - $site_income) / 100) * $Amount]);
@@ -2276,7 +2325,7 @@ private function  userNotifications(){
             sendNotification(0, ['[c.title]' => $product->title], get_option('notification_template_buy_new'), 'user', $Transaction->buyer_id);
 
             return redirect('/product/' . $Transaction->content_id);
-        }else{
+        } else {
             return \redirect('/product/' . $product_id)->with('msg', trans('admin.payment_failed'));
         }
     }
