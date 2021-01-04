@@ -1901,11 +1901,8 @@ class UserController extends Controller
     public function facebookLogin()
     {
 
-        dd(
-             Socialite::driver('facebook')->redirect()
-
-        );
-       
+        
+        return Socialite::driver('facebook')->redirect();
 
 
     }
@@ -1913,6 +1910,7 @@ class UserController extends Controller
     public function facebookDoLogin(Request $request)
     {
         $user = Socialite::driver('facebook')->user();
+        dd($user);
         $newUser = [
             'username' => $user->name,
             'created_at' => time(),
