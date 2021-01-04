@@ -62,9 +62,137 @@ class WebController extends Controller
     }
 
     // home page
-    public function home()
+    public function home(Request $request, $id = null)
     {
         $user = (auth()->check()) ? auth()->user() : null;
+
+
+        $order = $request->get('order', null);
+        $price = $request->get('price', null);
+        $course = $request->get('course', null);
+        $off = $request->get('off', null);
+        if ($request->get('filter') != null) {
+            $filters = array_unique($request->get('filter'));
+        } else {
+            $filters = null;
+        }
+        $q = $request->get('q', null);
+        $post_sell = $request->get('post-sell', null);
+        $support = $request->get('support', null);
+
+        $Category = ContentCategory::with(array('filters' => function ($q) {
+            $q->with('tags');
+        }))->where('class', $id)->first();
+
+
+        $vipContent = [];
+        if ($Category) {
+            $vipContent = $this->getContentVipQuery()
+                ->where('type', 'category')
+                ->where('category_id', $Category->id)
+                ->with(['content' => function ($q) {
+                    $q->with(['metas', 'sells', 'discount'])->where('mode', 'publish');
+                }])
+                ->orderBy('id', 'DESC')
+                ->get();
+        }
+
+        $content = Content::where('mode', 'publish')->with(['metas', 'sells', 'discount', 'user'])->withCount('parts');
+        if (!empty($Category)) {
+            $content = $content->where('category_id', $Category->id);
+        }
+
+        if (isset($q) and $q != '') {
+            $content->where('title', 'LIKE', '%' . $q . '%');
+        }
+
+        if (isset($post_sell) and $post_sell == 1) {
+            $content->where('post', '1');
+        }
+
+        if (isset($support) and $support == 1) {
+            $content->where('support', '1');
+        }
+
+        if (isset($order) and $order == 'old') {
+            $content->orderBy('id');
+        }
+
+        if (isset($order) and $order == 'new') {
+            $content->orderBy('id', 'DESC');
+        }
+
+        ## Set For Course
+        switch ($course) {
+            case 'one':
+                $content->where('type', 'single');
+                break;
+            case 'multi':
+                $content->where('type', 'course');
+                break;
+            case 'webinar':
+                $content->where(function ($w){$w->where('type','webinar')->orwhere('type','course+webinar');});
+                break;
+            default:
+                break;
+        }
+
+        $content = $content->get()->toArray();
+
+        foreach ($content as $index => $c) {
+            $content[$index]['metas'] = arrayToList($c['metas'], 'option', 'value');
+        }
+
+        ## Most Sell
+        $mostSellContent = $content;
+        usort($mostSellContent, array($this, 'orderSell'));
+        $mostSellContent = array_slice($mostSellContent, 0, 3);
+
+
+        ## Set For OrderBy
+        switch ($order) {
+            case 'price':
+                usort($content, array($this, 'orderPrice'));
+                break;
+            case 'cheap':
+                usort($content, array($this, 'orderCheap'));
+                break;
+            case 'sell':
+                usort($content, array($this, 'orderSell'));
+                break;
+            case 'popular':
+                usort($content, array($this, 'orderView'));
+                break;
+            default:
+                break;
+        }
+
+        ## Set For Pricing
+        switch ($price) {
+            case 'all':
+                break;
+            case 'free':
+                $content = $this->pricing($content, 'free');
+                break;
+            case 'price':
+                $content = $this->pricing($content, 'price');
+                break;
+            default:
+                break;
+        }
+
+        ## Set For Off
+        if ($off == 1) {
+            $content = $this->off($content);
+        }
+
+        ## Set For Filters
+        if ($filters != '') {
+            $content = $this->filters($content, $filters);
+        }
+
+
+
         $data = [
             'new_content' => $this->getContents('new', 'id', 'DESC'),
             'sell_content' => $this->getContents('sellCount', 'sells_count', 'DESC', 'sells'),
@@ -78,7 +206,16 @@ class WebController extends Controller
             'slider_container' => $this->getSliderContainer(),
             'channels' => $this->getChannels(),
             'notifications' => $this->userNotifications(),
-            'user' => $user
+            'user' => $user,
+            'category' => $Category,
+            'contents' => $content,
+            'vip' => $vipContent,
+            'order' => $order,
+            'pricing' => $price,
+            'course' => $course,
+            'off' => $off,
+            'filters' => $filters,
+            'mostSell' => $mostSellContent
         ];
 
         return view(getTemplate() . '.view.main', $data);
@@ -226,7 +363,6 @@ private function  userNotifications(){
 
     public function category(Request $request, $id = null)
     {
-        dd("Catch errors for script and full tracking ( 1 )");
         $order = $request->get('order', null);
         $price = $request->get('price', null);
         $course = $request->get('course', null);
