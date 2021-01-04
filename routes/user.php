@@ -253,7 +253,6 @@ Route::group(['middleware' => 'notification'], function () {
 
 
         
-        Route::any('/facebook/login', 'UserController@facebookDoLogin');
 
 
 

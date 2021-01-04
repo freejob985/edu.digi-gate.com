@@ -1863,6 +1863,8 @@ class UserController extends Controller
     public function googleLogin($type)
     {
         return Socialite::driver($type)->redirect();
+        Session::put('type', $type);
+
     }
 
 
@@ -1871,6 +1873,7 @@ class UserController extends Controller
 
     public function googleDoLogin(Request $request)
     {
+        dd(Session::get('type'));
         session()->put('state', $request->input('state'));
         $user = Socialite::driver('google')->user();
 
