@@ -20,7 +20,7 @@ class LoginController extends Controller
     | redirecting them to your home screen. The controller uses a trait
     | to conveniently provide its functionality to your applications.
     |
-    */
+     */
 
     use AuthenticatesUsers;
 
@@ -38,7 +38,7 @@ class LoginController extends Controller
      */
     public function __construct()
     {
-        $this->middleware(['guest','notification'])->except('logout');
+        $this->middleware(['guest', 'notification'])->except('logout');
     }
 
     /**
@@ -48,7 +48,7 @@ class LoginController extends Controller
      */
     public function showLoginForm()
     {
-          //صفحة النموذج
+        //صفحة النموذج
         return view(getTemplate() . '.auth.login');
     }
 
@@ -89,7 +89,7 @@ class LoginController extends Controller
     {
         $credentials = [
             $this->username() => $request->get('username'),
-            'password' => $request->get('password')
+            'password' => $request->get('password'),
         ];
         $remember = false;
         if (!empty($request->get('remember')) and $request->get('remember') == true) {
@@ -121,11 +121,11 @@ class LoginController extends Controller
         $user->last_view = time();
         $user->updated_at = time();
         $user->save();
-//تسجيلات الدخول 
+//تسجيلات الدخول
         Event::create([
             'user_id' => $user->id,
             'type' => 'Login Page',
-            'ip' => $request->ip()
+            'ip' => $request->ip(),
         ]);
 //عمليات التوجيه
         if ($user->isAdmin()) {

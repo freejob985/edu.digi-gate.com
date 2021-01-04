@@ -248,6 +248,13 @@ Route::group(['middleware' => 'notification'], function () {
         Route::get('/sociliate/google', 'UserController@googleLogin');
         Route::any('/google/login', 'UserController@googleDoLogin');
 
+
+        Route::get('/sociliate/facebook', 'UserController@facebookLogin');
+        Route::any('/facebook/login', 'UserController@facebookDoLogin');
+
+
+
+
         ## Register Steps ##
         Route::get('steps/one/{phone}', 'UserController@registerStepOne');
         Route::get('steps/two/{phone}/{code}', 'UserController@registerStepTwo');
