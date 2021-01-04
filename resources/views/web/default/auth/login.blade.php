@@ -31,7 +31,8 @@
                         <div class="f_link">
                             <a href="" class="resetTag restag pull-right" style="color: #242424 !important;">{{ trans('main.forget_password') }}</a>
                             <a href="/user/sociliate/google" class="btn btn-custom btn-check-form pull-left"><i class="fa fa-google-plus icon-rs"></i><span>{{ trans('main.sign_in_google') }}</span></a>
-                            <a href="/user/sociliate/facebook" class="btn btn-custom btn-check-form pull-left"><i class="fa fa-facebook icon-rs"></i><span>{{ trans('main.sign_in_google') }}</span></a>
+                            <br>
+                            <a href="/user/sociliate/facebook" class="btn btn-custom btn-check-form pull-left"><i class="fa fa-facebook icon-rs"></i><span>Facebook LOGIN</span></a>
 
                         </div>
                     </form>
