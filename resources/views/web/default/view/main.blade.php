@@ -74,7 +74,7 @@
             </div>
         </div>
     </div>
-    
+
     @include(getTemplate() . '.view.parts.container')
     @if(isset($setting['site']['main_page_newest_container']) and $setting['site']['main_page_newest_container'] == 1)
         @include(getTemplate() . '.view.parts.newest')
@@ -89,3 +89,22 @@
     @include(getTemplate() . '.view.parts.news')
 
 @endsection
+@section('script')
+    <script>
+        $(function () {
+            pagination('.body-target', {{ !empty($setting['site']['category_content_count']) ? $setting['site']['category_content_count'] : 6 }}, 0);
+            $('.pagi').pagination({
+                items: {!! count($contents) !!},
+                itemsOnPage:  {{ !empty($setting['site']['category_content_count']) ? $setting['site']['category_content_count'] : 6 }},
+                cssStyle: 'light-theme',
+                prevText: 'Pre.',
+                nextText: 'Next',
+                onPageClick: function (pageNumber, event) {
+                    pagination('.body-target', {{ !empty($setting['site']['category_content_count']) ? $setting['site']['category_content_count'] : 6 }}, pageNumber - 1);
+                }
+            });
+        });
+    </script>
+    <script type="application/javascript" src="/assets/default/javascripts/category-page-custom.js"></script>
+@endsection
+
