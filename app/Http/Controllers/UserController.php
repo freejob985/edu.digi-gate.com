@@ -1900,6 +1900,9 @@ class UserController extends Controller
     // +++++++++++++++++++
     public function facebookLogin()
     {
+
+
+        dd("Catch errors for script and full tracking ( 3 )");
         return Socialite::driver('facebook')->redirect();
 
 
