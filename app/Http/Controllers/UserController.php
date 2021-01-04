@@ -1901,8 +1901,11 @@ class UserController extends Controller
     public function facebookLogin()
     {
 
-        
-        return Socialite::driver('facebook')->redirect();
+        dd(
+             Socialite::driver('facebook')->redirect()
+
+        );
+       
 
 
     }
