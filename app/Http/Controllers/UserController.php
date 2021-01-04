@@ -1860,10 +1860,14 @@ class UserController extends Controller
         return redirect('/')->with('msg', trans('main.new_pass_email'));
     }
 
-    public function googleLogin()
+    public function googleLogin($type)
     {
-        return Socialite::driver('google')->redirect();
+        return Socialite::driver($google)->redirect();
     }
+
+
+
+    
 
     public function googleDoLogin(Request $request)
     {
