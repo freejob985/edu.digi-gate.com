@@ -1031,6 +1031,7 @@ class UserController extends Controller
         $newContent['mode'] = 'draft';
         $newContent['user_id'] = $user->id;
         $content_id = Content::insertGetId($newContent);
+        dd($newContent);
         return redirect('/user/content/edit/' . $content_id);
 
     }
@@ -1135,7 +1136,7 @@ class UserController extends Controller
 
     public function contentPartEdit($id)
     {
-        dd($id);
+      
         $user = auth()->user();
         $contentPart = ContentPart::with('content')->find($id);
         if ($contentPart && $contentPart->content->user_id = $user->id) {
