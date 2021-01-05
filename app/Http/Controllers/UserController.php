@@ -664,6 +664,7 @@ class UserController extends Controller
 
     public function recordEdit($id)
     {
+        dd($id);
         $user = auth()->user();
         $lists = Record::where('user_id', $user->id)->with('category')->withCount('fans')->orderBy('id', 'DESC')->get();
         $userContent = Content::where('user_id', $user->id)->where('mode', 'publish')->get();
