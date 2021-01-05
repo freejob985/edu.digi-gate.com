@@ -1032,7 +1032,7 @@ class UserController extends Controller
         $newContent['mode'] = 'draft';
         $newContent['user_id'] = $user->id;
         $content_id = Content::insertGetId($newContent);
-        dd($newContent);
+      //  dd($newContent);
         return redirect('/user/content/edit/' . $content_id);
 
     }
