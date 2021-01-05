@@ -664,7 +664,6 @@ class UserController extends Controller
 
     public function recordEdit($id)
     {
-        dd($id);
         $user = auth()->user();
         $lists = Record::where('user_id', $user->id)->with('category')->withCount('fans')->orderBy('id', 'DESC')->get();
         $userContent = Content::where('user_id', $user->id)->where('mode', 'publish')->get();
@@ -1025,14 +1024,12 @@ class UserController extends Controller
 
     public function contentStore(Request $request)
     {
-       // dd("Catch errors for script and full tracking ( 1 )");
         $user = auth()->user();
         $newContent = $request->except(['_token']);
         $newContent['created_at'] = time();
         $newContent['mode'] = 'draft';
         $newContent['user_id'] = $user->id;
         $content_id = Content::insertGetId($newContent);
-      //  dd($newContent);
         return redirect('/user/content/edit/' . $content_id);
 
     }
@@ -1098,7 +1095,6 @@ class UserController extends Controller
 
     public function contentMetaStore($id, Request $request)
     {
-        dd($request->all());
         $user = auth()->user();
         $content = Content::where('user_id', $user->id)->find($id);
         if ($content) {
@@ -1138,7 +1134,6 @@ class UserController extends Controller
 
     public function contentPartEdit($id)
     {
-      
         $user = auth()->user();
         $contentPart = ContentPart::with('content')->find($id);
         if ($contentPart && $contentPart->content->user_id = $user->id) {
@@ -1181,8 +1176,6 @@ class UserController extends Controller
 
     public function contentPartStore(Request $request)
     {
-        dd("Catch errors for script and full tracking ( 2 )");
-        dd($request->all());
         $user = auth()->user();
         $content = Content::where('user_id', $user->id)->find($request->content_id);
         if ($content) {
@@ -1197,8 +1190,6 @@ class UserController extends Controller
 
     public function contentPartUpdate(Request $request, $id)
     {
-        dd("Catch errors for script and full tracking ( 3 )");
-        dd($request->all());
         $user = auth()->user();
         $content = Content::where('user_id', $user->id)->find($request->content_id);
         if ($content) {

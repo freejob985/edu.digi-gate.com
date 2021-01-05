@@ -196,23 +196,7 @@
                     <form method="post" id="step-3-form-meta" class="form-horizontal">
                         {{ csrf_field() }}
                         <div class="h-10"></div>
-
-
-                        <div class="form-group">
-                            <label class="control-label col-md-4 tab-con">نسبة الخصم</label>
-
-                            <div class="col-md-8 tab-con">
-                                <div class="input-group">
-                                    <input type="number" name="Discount" onkeypress="validate(event)"
-                                        value="{{ $item->Discount}}" class="form-control text-center">
-                                    <span class="input-group-addon click-for-upload img-icon-s">الخصم</span>
-                                </div>
-                            </div>
-                        </div>
-
-
-
-                        <div class="form-group">
+                    <div class="form-group">
                             <label class="control-label col-md-4 tab-con">{{ trans('main.price') }}</label>
                             <div class="col-md-8 tab-con">
                                 <div class="input-group">
