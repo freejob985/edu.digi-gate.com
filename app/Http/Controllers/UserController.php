@@ -1098,6 +1098,7 @@ class UserController extends Controller
 
     public function contentMetaStore($id, Request $request)
     {
+        dd($request->all());
         $user = auth()->user();
         $content = Content::where('user_id', $user->id)->find($id);
         if ($content) {
