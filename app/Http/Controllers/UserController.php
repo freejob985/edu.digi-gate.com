@@ -1025,6 +1025,7 @@ class UserController extends Controller
 
     public function contentStore(Request $request)
     {
+        dd("Catch errors for script and full tracking ( 1 )");
         $user = auth()->user();
         $newContent = $request->except(['_token']);
         $newContent['created_at'] = time();
