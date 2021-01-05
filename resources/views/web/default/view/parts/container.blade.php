@@ -1,5 +1,5 @@
 
-asdasd
+
 <div class="container hidden-xs hidden-sm" id="anchor-animate">
     <div class="h-25"></div>
     <div class="row">
