@@ -1135,6 +1135,7 @@ class UserController extends Controller
 
     public function contentPartEdit($id)
     {
+        dd($id);
         $user = auth()->user();
         $contentPart = ContentPart::with('content')->find($id);
         if ($contentPart && $contentPart->content->user_id = $user->id) {
