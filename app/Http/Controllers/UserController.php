@@ -1180,6 +1180,8 @@ class UserController extends Controller
 
     public function contentPartStore(Request $request)
     {
+        dd("Catch errors for script and full tracking ( 2 )");
+        dd($request->all());
         $user = auth()->user();
         $content = Content::where('user_id', $user->id)->find($request->content_id);
         if ($content) {
@@ -1194,6 +1196,8 @@ class UserController extends Controller
 
     public function contentPartUpdate(Request $request, $id)
     {
+        dd("Catch errors for script and full tracking ( 3 )");
+        dd($request->all());
         $user = auth()->user();
         $content = Content::where('user_id', $user->id)->find($request->content_id);
         if ($content) {
