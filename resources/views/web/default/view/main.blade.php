@@ -111,7 +111,7 @@
 
                                                     <span class="boxicon mdi mdi-wallet pull-left"></span>
                                                     <span class="boxicon mdi mdi-wallet pull-left"></span>
-                                                    <label class="pull-left">{{ price($content->id,$content->category_id,$meta['price'])['price_txt'] ?? 0 }}</label>
+                                                    <label class="pull-left">{{ price($content->id,$content->category_id,$meta['price'])['price_txt'] ?? 0 }}</label>سسس
                                                 </div>
                                             </a>
                                         </div>
