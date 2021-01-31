@@ -111,7 +111,8 @@
 
                                                     <span class="boxicon mdi mdi-wallet pull-left"></span>
                                                     <span class="boxicon mdi mdi-wallet pull-left"></span>
-                                                    <label class="pull-left">{{ price($content->id,$content->category_id,$meta['price'])['price_txt'] ?? 0 }}</label>سسس
+                                                    @dd("Catch errors for script and full tracking ( 2)");
+                                                    <label class="pull-left">{{ price($content->id,$content->category_id,$meta['price'])['price_txt'] ?? 0 }}</label>
                                                 </div>
                                             </a>
                                         </div>
