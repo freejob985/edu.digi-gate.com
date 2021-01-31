@@ -331,7 +331,8 @@ function sendMail(array $request)
             Mail::send('email.content', ['content' => $request['message']], function ($mail) use ($to, $request) {
                 $mail->to($to->email, $to->name);
                 $mail->subject($request['subject']);
-                $mail->from(get_option('site_email', 'no-reply@site.com'), get_option('site_title'));
+                //get_option('site_email', 'no-reply@site.com'),
+                $mail->from("mail@edu.digi-gate.com", get_option('site_title'));
                 if (isset($request['attach']) && $request['attach'] != '') {
                     $mail->attach(public_path() . $request['attach']);
                 }
