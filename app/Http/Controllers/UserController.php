@@ -1098,7 +1098,9 @@ class UserController extends Controller
         $user = auth()->user();
         $content = Content::where('user_id', $user->id)->find($id);
         if ($content) {
+            dd($request->all());
             ContentMeta::updateOrNew($content->id, $request->all());
+
             echo 'true';
         }
     }
@@ -1205,7 +1207,7 @@ class UserController extends Controller
     ## Json Section
     public function contentPartsJson($id)
     {
-        dd("Catch errors for script and full tracking ( 2 )");
+   //     dd("Catch errors for script and full tracking ( 2 )");
         $user = auth()->user();
         $result = [];
         $content = Content::with(['parts' => function ($q) {
