@@ -1205,6 +1205,7 @@ class UserController extends Controller
     ## Json Section
     public function contentPartsJson($id)
     {
+        dd("Catch errors for script and full tracking ( 2 )");
         $user = auth()->user();
         $result = [];
         $content = Content::with(['parts' => function ($q) {
