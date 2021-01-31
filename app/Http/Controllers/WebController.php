@@ -212,7 +212,8 @@ class WebController extends Controller
             'filters' => $filters,
             'mostSell' => $mostSellContent,
         ];
-
+        dd(getTemplate());
+     ///   content
         return view(getTemplate() . '.view.main', $data);
     }
 
