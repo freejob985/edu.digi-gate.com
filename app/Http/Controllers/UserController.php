@@ -1098,7 +1098,7 @@ class UserController extends Controller
         $user = auth()->user();
         $content = Content::where('user_id', $user->id)->find($id);
         if ($content) {
-            dd($request->all());
+           // dd($request->all());
             ContentMeta::updateOrNew($content->id, $request->all());
 
             echo 'true';
