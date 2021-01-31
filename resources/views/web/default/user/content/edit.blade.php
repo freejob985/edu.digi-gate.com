@@ -218,6 +218,17 @@
                             </div>
                         </div>
                         <div class="form-group">
+                            <label class="control-label col-md-4 tab-con">Discount</label>
+                            <div class="col-md-8 tab-con">
+                                <div class="input-group">
+                                    <input type="number" name="Discount" onkeypress="validate(event)"
+                                        value="" class="form-control text-center">
+                                    <span
+                                        class="input-group-addon click-for-upload img-icon-s">{{ currencySign() }}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
                             <label class="control-label col-md-4 tab-con">سعر الباقة الرئسية</label>
                             <div class="col-md-8 tab-con">
                                 <div class="input-group">
@@ -229,6 +240,11 @@
                                 </div>
                             </div>
                         </div>
+                   
+                   
+                   
+                   
+                   
                     </form>
                     <form method="post" id="step-3-form-subscribe" class="form-horizontal">
                         {{ csrf_field() }}
