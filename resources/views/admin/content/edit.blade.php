@@ -321,6 +321,7 @@
                                         <label class="col-md-12 control-label">3 Months Subscribe Price</label>
                                         <div class="col-md-12">
                                             <div class="input-group">
+                                                @dd("Catch errors for script and full tracking ( 1 )");
                                                 <input type="text" name="price_3" value="{{ $item->price_3 }}" class="form-control text-center">
                                                 <span class="input-group-append click-for-upload cu-p">
                                                     <span class="input-group-text">{{ currencySign() }}</span>
