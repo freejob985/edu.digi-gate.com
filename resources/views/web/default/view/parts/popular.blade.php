@@ -15,7 +15,7 @@
                                 <img src="{{ !empty($meta['thumbnail']) ? $meta['thumbnail'] : '' }}"/>
                                 <h3>{!! truncate($popular->title,35) !!}</h3>
                                 <div class="footer">
-                                    <span class="avatar" title="{{ !empty($content['user']['name']) ? $content['user']['name'] : '' }}" onclick="window.location.href = '/profile/{{ $content['user']['id'] }}'"><img src="{{ get_user_meta($content['user_id'],'avatar',get_option('default_user_avatar','')) }}"></span>
+                                    <span class="avatar" title="{{ !empty($meta['user']['name']) ? $meta['user']['name'] : '' }}" onclick="window.location.href = '/profile/{{ $meta['user']['id'] }}'"><img src="{{ get_user_meta($meta['user_id'],'avatar',get_option('default_user_avatar','')) }}"></span>
 
                                         <label class="pull-right content-clock">{{ contentDuration($content['id']) }}</label>
                                         <span class="boxicon mdi mdi-clock pull-right"></span>
