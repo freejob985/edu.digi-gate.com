@@ -194,7 +194,72 @@
         @include(getTemplate() . '.view.parts.vip')
     @endif
     @include(getTemplate() . '.view.parts.news')
+    {{--  Software additions  --}}
 
+
+    <script>
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+    
+        window.Laravel = <?php echo json_encode(['csrfToken' => csrf_token(), 'guest' => !auth()->check()]); ?>;
+    </script>
+    
+    <script type="application/javascript" src="/assets/default/vendor/jquery-ui/js/jquery-1.10.2.js"></script>
+    <script type="application/javascript" src="/assets/default/vendor/bootstrap/js/bootstrap.min.js"></script>
+    <script type="application/javascript" src="/assets/default/vendor/justgage/raphael-2.1.4.min.js"></script>
+    <script type="application/javascript" src="/assets/default/vendor/justgage/justgage.js"></script>
+    <script type="application/javascript" src="/assets/default/vendor/simplepagination/jquery.simplePagination.js"></script>
+    <script type="application/javascript" src="/assets/default/vendor/onloader/js/jquery.oLoader.min.js"></script>
+    <script type="application/javascript" src="/assets/default/vendor/ios7-switch/ios7-switch.js"></script>
+    <script type="application/javascript" src="/assets/default/vendor/sticky/jquery.sticky.js"></script>
+    <script type="application/javascript" src="/assets/default/vendor/chartjs/Chart.min.js"></script>
+    <script type="application/javascript" src="/assets/default/vendor/bootstrap-notify-master/bootstrap-notify.min.js"></script>
+    <script type="application/javascript" src="/assets/default/vendor/auto-numeric/autoNumeric.js"></script>
+    <script type="application/javascript" src="/assets/default/vendor/raty/jquery.raty.js"></script>
+    <script type="application/javascript" src="/assets/default/vendor/easyautocomplete/jquery.easy-autocomplete.min.js"></script>
+    <script type="application/javascript" src="/assets/default/vendor/bootstrap-tagsinput/bootstrap-tagsinput.js"></script>
+    <script type="application/javascript" src="/assets/default/vendor/owlcarousel/dist/owl.carousel.min.js"></script>
+    <script type="application/javascript" src="/assets/default/vendor/jquery-te/jquery-te-1.4.0.min.js"></script>
+    <script type="application/javascript">var sliderTimer = <?=get_option('main_page_slider_timer', 10000);?>;</script>
+    <script>
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip()
+        })
+        var preloader = {!! get_option('site_preloader',0) !!};
+    </script>
+    <script type="application/javascript" src="/assets/default/javascripts/view-custom.js"></script>
+    @if(isset($user))
+        <script>login({!! $user['id'] !!})</script>
+    @endif
+    @if(get_option('site_popup',0) == '1' && session('popup') == 0)
+        <script>
+            $(function () {
+                $('#site_popup').modal();
+            })
+        </script>
+        @php session(['popup'=>1]) @endphp
+    @endif
+    @yield('script')
+    @if(session('msg') != null)
+        <script>
+            $.notify({
+                message: '{{ session('msg')}}'
+            }, {
+                type: 'danger',
+                allow_dismiss: false,
+                z_index: '99999999',
+                placement: {
+                    from: "bottom",
+                    align: "right"
+                },
+                position: 'fixed'
+            });
+        </script>
+        @endif
+        {!! get_option('main_js') !!}
 @endsection
 @section('script')
     <script>
@@ -305,71 +370,6 @@
         Countdown.init();
     </script>
 
-    {{--  Software additions  --}}
-
-
-    <script>
-        $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            }
-        });
-    
-        window.Laravel = <?php echo json_encode(['csrfToken' => csrf_token(), 'guest' => !auth()->check()]); ?>;
-    </script>
-    
-    <script type="application/javascript" src="/assets/default/vendor/jquery-ui/js/jquery-1.10.2.js"></script>
-    <script type="application/javascript" src="/assets/default/vendor/bootstrap/js/bootstrap.min.js"></script>
-    <script type="application/javascript" src="/assets/default/vendor/justgage/raphael-2.1.4.min.js"></script>
-    <script type="application/javascript" src="/assets/default/vendor/justgage/justgage.js"></script>
-    <script type="application/javascript" src="/assets/default/vendor/simplepagination/jquery.simplePagination.js"></script>
-    <script type="application/javascript" src="/assets/default/vendor/onloader/js/jquery.oLoader.min.js"></script>
-    <script type="application/javascript" src="/assets/default/vendor/ios7-switch/ios7-switch.js"></script>
-    <script type="application/javascript" src="/assets/default/vendor/sticky/jquery.sticky.js"></script>
-    <script type="application/javascript" src="/assets/default/vendor/chartjs/Chart.min.js"></script>
-    <script type="application/javascript" src="/assets/default/vendor/bootstrap-notify-master/bootstrap-notify.min.js"></script>
-    <script type="application/javascript" src="/assets/default/vendor/auto-numeric/autoNumeric.js"></script>
-    <script type="application/javascript" src="/assets/default/vendor/raty/jquery.raty.js"></script>
-    <script type="application/javascript" src="/assets/default/vendor/easyautocomplete/jquery.easy-autocomplete.min.js"></script>
-    <script type="application/javascript" src="/assets/default/vendor/bootstrap-tagsinput/bootstrap-tagsinput.js"></script>
-    <script type="application/javascript" src="/assets/default/vendor/owlcarousel/dist/owl.carousel.min.js"></script>
-    <script type="application/javascript" src="/assets/default/vendor/jquery-te/jquery-te-1.4.0.min.js"></script>
-    <script type="application/javascript">var sliderTimer = <?=get_option('main_page_slider_timer', 10000);?>;</script>
-    <script>
-        $(function () {
-            $('[data-toggle="tooltip"]').tooltip()
-        })
-        var preloader = {!! get_option('site_preloader',0) !!};
-    </script>
-    <script type="application/javascript" src="/assets/default/javascripts/view-custom.js"></script>
-    @if(isset($user))
-        <script>login({!! $user['id'] !!})</script>
-    @endif
-    @if(get_option('site_popup',0) == '1' && session('popup') == 0)
-        <script>
-            $(function () {
-                $('#site_popup').modal();
-            })
-        </script>
-        @php session(['popup'=>1]) @endphp
-    @endif
-    @yield('script')
-    @if(session('msg') != null)
-        <script>
-            $.notify({
-                message: '{{ session('msg')}}'
-            }, {
-                type: 'danger',
-                allow_dismiss: false,
-                z_index: '99999999',
-                placement: {
-                    from: "bottom",
-                    align: "right"
-                },
-                position: 'fixed'
-            });
-        </script>
-        @endif
-        {!! get_option('main_js') !!}
+  
 @endsection
 
