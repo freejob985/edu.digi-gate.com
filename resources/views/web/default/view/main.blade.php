@@ -150,20 +150,12 @@
                                                $contents_meta = DB::table('contents_meta')->where('option','Discount')->where('content_id',$content['id'])->value('value');
                                                $content_rate[] = DB::table('content_rate')->where('content_id',$content['id'])->value('rate');
                                                 @endphp
-                                                <label class="pull-left"> قبل الخصم: @if(isset($content['metas']['price'])) {{ price($content['id'],$content['category_id'],$content['metas']['price'])['price_txt'] ?? 0 }} @endif</label>
-                                                <label class="pull-left"> بعد الخصم : {{$contents_meta}}$</label>
+                                                <label class="pull-left"> @if(isset($content['metas']['price'])) {{ price($content['id'],$content['category_id'],$content['metas']['price'])['price_txt'] ?? 0 }} @endif</label> -
+                                                <label class="pull-left"> {{$contents_meta}}$</label>
                                                
                                             </div>
                                         </a>
-                                        <div class="col-xs-12 col-md-4 text-left" style="
-                                        display: none;
-                                    ">
-                                            <div class="raty-product-section">
-                                                <div class="raty"></div>
-                                        
-                                                <span class="raty-text">({{ count( $content_rate ) }} {{ trans('main.votes') }})</span>
-                                            </div>
-                                        </div>
+                                   
                                     </div>
                                 @endif
                             @endforeach
