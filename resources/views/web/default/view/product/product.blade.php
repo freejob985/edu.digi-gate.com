@@ -11,9 +11,7 @@
                     <h2>{{ $product->title }}</h2>
                 </div>
                 <div class="col-xs-12 col-md-4 text-left">
-                    <div class="raty-product-section" style="
-                    display: none;
-                ">
+                    <div class="raty-product-section" >
                         <div class="raty"></div>
                         <span class="raty-text">({{ count($product->rates) }} {{ trans('main.votes') }})</span>
                     </div>
