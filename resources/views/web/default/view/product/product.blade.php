@@ -10,6 +10,7 @@
                 <div class="col-xs-12 col-md-8 tab-con">
                     <h2>{{ $product->title }}</h2>
                 </div>
+                @dd("Catch errors for script and full tracking ( 1)");
                 <div class="col-xs-12 col-md-4 text-left">
                     <div class="raty-product-section">
                         <div class="raty"></div>
