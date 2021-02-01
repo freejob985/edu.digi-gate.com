@@ -311,7 +311,7 @@
     {{--  Software additions  --}}
     <script>
         $('.raty').raty({
-            starType: 'i', score: {{ ($product->rates->avg('rate')) ? $product->rates->avg('rate') : 0  }}, click: function (rate) {
+            starType: 'i', score: '', click: function (rate) {
                 window.location = window.location.href + '/rate/' + rate;
             }
         });
