@@ -19,6 +19,10 @@
                                     @if(isset($popular->user))
                                     <span class="avatar" title="{{ $popular->user->name }}" onclick="window.location.href = '/profile/{{ $popular->user->id }}'"><img src="{{ get_user_meta($popular->user_id,'avatar',get_option('default_user_avatar','')) }}"></span>
                                     @endif
+                                    @php
+                                    $contents_meta = DB::table('contents_meta')->where('option','Discount')->where('content_id',$new->id)->value('value');
+                                    $content_rate[] = DB::table('content_rate')->where('content_id',$new->id)->value('rate');
+                                     @endphp
                                         <label class="pull-right content-clock">{!! contentDuration($popular->id) !!}</label>
                                     <span class="boxicon mdi mdi-clock pull-right"></span>
                                     <span class="boxicon mdi mdi-wallet pull-left"></span>
