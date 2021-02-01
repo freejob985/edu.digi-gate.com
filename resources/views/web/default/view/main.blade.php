@@ -148,7 +148,7 @@
                                                 {{--  @dd("Catch errors for script and full tracking ( 2)");  --}}
                                                 @php
                                                $contents_meta = DB::table('contents_meta')->where('option','Discount')->where('content_id',$content['id'])->value('value');
-                                               $content_rate = DB::table('content_rate')->where('content_id',$content['id'])->value('rate');
+                                               $content_rate[] = DB::table('content_rate')->where('content_id',$content['id'])->value('rate');
                                                 @endphp
                                                 <label class="pull-left"> قبل الخصم: @if(isset($content['metas']['price'])) {{ price($content['id'],$content['category_id'],$content['metas']['price'])['price_txt'] ?? 0 }} @endif</label>
                                                 <label class="pull-left"> بعد الخصم : {{$contents_meta}}$</label>
