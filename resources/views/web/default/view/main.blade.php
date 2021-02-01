@@ -111,6 +111,7 @@
 
                                                     <span class="boxicon mdi mdi-wallet pull-left"></span>
                                                     <span class="boxicon mdi mdi-wallet pull-left"></span>
+                                                  
                                                     <label class="pull-left">{{ price($content->id,$content->category_id,$meta['price'])['price_txt'] ?? 0 }}</label>
                                                 </div>
                                             </a>
@@ -144,7 +145,17 @@
                                                     <span class="boxicon mdi mdi-clock pull-right"></span>
 
                                                 <span class="boxicon mdi mdi-wallet pull-left"></span>
-                                                <label class="pull-left">@if(isset($content['metas']['price'])) {{ price($content['id'],$content['category_id'],$content['metas']['price'])['price_txt'] ?? 0 }} @endif</label>
+                                                @php
+                                               $contents_meta = DB::table('contents_meta')->where('option','Discount')->where('content_id',$content['id'])->value('value');
+                                                @endphp
+                                                <label class="pull-left"> قبل الخصم: @if(isset($content['metas']['price'])) {{ price($content['id'],$content['category_id'],$content['metas']['price'])['price_txt'] ?? 0 }} @endif</label>
+                                                <label class="pull-left"> بعد الخصم : {{$contents_meta}}$</label>
+                                                <div class="col-xs-12 col-md-4 text-left">
+                                                    <div class="raty-product-section">
+                                                        <div class="raty"></div>
+                                                        <span class="raty-text">({{ count( $content['rates'] ) }} {{ trans('main.votes') }})</span>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </a>
                                     </div>
