@@ -8,6 +8,7 @@
             <div class="body body-s-r">
                 <span class="nav-right"></span>
                 <div class="owl-carousel">
+                    سسسسسسسسسسسسسسسسسسسسسسسسسسسسسسسسسسسسس
                     @foreach($popular_content as $popular)
                         <?php $meta = arrayToList($popular->metas, 'option', 'value'); ?>
                         <div class="owl-car-s" dir="rtl">
