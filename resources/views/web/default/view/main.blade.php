@@ -155,7 +155,7 @@
                                                 <div class="col-xs-12 col-md-4 text-left">
                                                     <div class="raty-product-section">
                                                         <div class="raty"></div>
-                                                        @dd($content);
+                                                
                                                         <span class="raty-text">({{ count( $content_rate ) }} {{ trans('main.votes') }})</span>
                                                     </div>
                                                 </div>
