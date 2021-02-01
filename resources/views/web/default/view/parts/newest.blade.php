@@ -27,13 +27,8 @@
                                     <label class="pull-right content-clock">{!! contentDuration($new->id) !!}</label>
                                     <span class="boxicon mdi mdi-clock pull-right"></span>
                                     <span class="boxicon mdi mdi-wallet pull-left"></span>
-                                    <label class="pull-left">
-                                        @if(isset($meta['price']) && $meta['price']>0)
-                                            {{currencySign()}}{{ price($new->id,$new->category_id,$meta['price'])['price'] }}
-                                        @else
-                                            {{ trans('main.free') }}
-                                        @endif
-                                    </label>
+                                    <label class="pull-left" style="padding-left: 4%;text-decoration: line-through; "> @if(isset($content['metas']['price'])) {{ price($new->id,$content['category_id'],$content['metas']['price'])['price_txt'] ?? 0 }} @endif</label> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    <label class="pull-left"> {{$contents_meta}}$</label>
                                 </div>
                             </a>
                         </div>

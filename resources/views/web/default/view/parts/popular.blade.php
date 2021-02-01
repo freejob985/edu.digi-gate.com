@@ -30,8 +30,8 @@
                                     $contents_meta = DB::table('contents_meta')->where('option','Discount')->where('content_id',$popular->id)->value('value');
                                     $content_rate[] = DB::table('content_rate')->where('content_id',$popular->id)->value('rate');
                                      @endphp
-                                      <label class="pull-left" style="padding-left: 4%;text-decoration: line-through; "> @if(isset($meta['metas']['price'])) {{ price($meta['id'],$meta['category_id'],$meta['metas']['price'])['price_txt'] ?? 0 }} @endif</label> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                     <label class="pull-left"> {{$contents_meta}}$</label>    
+                                     <label class="pull-left" style="padding-left: 4%;text-decoration: line-through; "> @if(isset($content['metas']['price'])) {{ price($content['id'],$content['category_id'],$content['metas']['price'])['price_txt'] ?? 0 }} @endif</label> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                     <label class="pull-left"> {{$contents_meta}}$</label>
                                                                 </div>
                             </a>
                         </div>
